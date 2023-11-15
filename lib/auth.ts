@@ -1,10 +1,9 @@
 import bcrypt from "bcrypt";
-import NextAuth, { AuthOptions, getServerSession } from "next-auth";
+import { AuthOptions, getServerSession } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
-import { db } from "./db";
+import { db } from "@/lib/db";
 
 export const authOptions: AuthOptions = {
   adapter: PrismaAdapter(db),
@@ -48,8 +47,42 @@ export const authOptions: AuthOptions = {
   debug: process.env.NODE_ENV === "development",
   session: { strategy: "jwt" },
   secret: process.env.NEXTAUTH_SECRET,
+  // this add (id,image) to the session
+  callbacks: {
+    async session({ token, session }) {
+      if (token) {
+        session.user.id = token.id
+        session.user.name = token.name
+        session.user.email = token.email
+        session.user.image = token.picture
+      }
+
+      return session;
+    },
+
+    async jwt({ token, user }) {
+      const dbUser = await db.user.findFirst({
+        where: {
+          email: token.email,
+        },
+      });
+
+      if (!dbUser) {
+        token.id = user!.id;
+        return token;
+      }
+
+      return {
+        id: dbUser.id,
+        name: dbUser.name,
+        email: dbUser.email,
+        picture: dbUser.image,
+      };
+    },
+    redirect() {
+      return "/";
+    },
+  },
 };
-
-
 
 export const getAuthSession = () => getServerSession(authOptions);

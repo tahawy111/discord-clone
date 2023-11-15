@@ -51,10 +51,10 @@ export const authOptions: AuthOptions = {
   callbacks: {
     async session({ token, session }) {
       if (token) {
-        session.user.id = token.id
-        session.user.name = token.name
-        session.user.email = token.email
-        session.user.image = token.picture
+        session.user.id = token.id;
+        session.user.name = token.name;
+        session.user.email = token.email;
+        session.user.image = token.picture;
       }
 
       return session;
@@ -78,9 +78,6 @@ export const authOptions: AuthOptions = {
         email: dbUser.email,
         picture: dbUser.image,
       };
-    },
-    redirect() {
-      return "/";
     },
   },
 };

@@ -11,7 +11,6 @@ import Link from "next/link";
 
 interface AuthFormProps {}
 
-type Variant = "LOGIN" | "REGISTER";
 
 export default function LoginForm({}: AuthFormProps) {
   const router = useRouter();
@@ -61,7 +60,7 @@ export default function LoginForm({}: AuthFormProps) {
 
   return (
     <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-      <div className="bg-white px-4 py-8 shadow sm:rounded-lg sm:px-10">
+      <div className="dark:bg-[#27282d] px-4 py-8 shadow sm:rounded-lg sm:px-10">
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <Input
             placeholder="Email"
@@ -94,14 +93,14 @@ export default function LoginForm({}: AuthFormProps) {
             </div>
 
             <div className="relative flex justify-center text-sm">
-              <span className="bg-white px-2 text-gray-500">
+              <span className="dark:bg-[#27282d] bg-white px-2 text-gray-500 dark:text-white">
                 Or continue with
               </span>
             </div>
           </div>
 
           <div className="mt-6 flex gap-2">
-            <AuthSocialButton onClick={() => socialAction("google")}>
+            <AuthSocialButton className="dark:bg-main dark:border-none dark:outline-none dark:hover:bg-[#383941]" onClick={() => socialAction("google")}>
               {/* Google */}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -117,7 +116,7 @@ export default function LoginForm({}: AuthFormProps) {
           </div>
         </div>
 
-        <div className="flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500">
+        <div className="flex gap-2 justify-center text-sm mt-6 px-2 text-gray-500 dark:text-white">
           {"LOGIN" === "LOGIN"
             ? "New To Messenger?"
             : "Already Have An Account?"}

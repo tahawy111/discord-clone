@@ -1,3 +1,4 @@
+import InitialModal from "@/components/modals/initial-modal";
 import { ModeToggle } from "@/components/mode-toggle";
 import { db } from "@/lib/db";
 import { initialProfile } from "@/lib/initial-profile";
@@ -20,9 +21,6 @@ export default async function SetupPage() {
     return redirect(`servers/${server.id}`);
   }
   return (
-    <div className="">
-Create a Server
-      <ModeToggle />
-    </div>
+      <InitialModal />
   );
 }

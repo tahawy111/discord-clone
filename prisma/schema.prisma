@@ -61,16 +61,17 @@ model Session {
 }
 
 model Server {
-  id         String    @id @default(uuid())
-  name       String
-  imageUrl   String    @db.Text
-  inviteCode String    @db.Text
-  userId     String
-  User       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  members    Member[]
-  channels   Channel[]
+  id          String    @id @default(uuid())
+  name        String
+  imageUrl    String    @db.Text
+  cldPublicId String    @db.Text
+  inviteCode  String    @db.Text
+  userId      String
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  members     Member[]
+  channels    Channel[]
 }
 
 enum MemberRole {

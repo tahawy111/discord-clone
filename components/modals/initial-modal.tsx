@@ -26,14 +26,23 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FileUpload from "@/components/file-upload";
+import { imageUpload } from "@/lib/ImageUpload";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Server name is required." }),
-  imageUrl: z.string().min(1, { message: "Server image is required." }),
+  image: z
+    .any()
+    .refine((data) => data !== undefined && data !== null && data !== "", {
+      message: "Server image is required.",
+    }),
 });
 
 const InitialModal = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
+  const [file, setFile] = useState<File>();
+  const router = useRouter();
 
   useEffect(() => {
     setIsMounted(true);
@@ -43,13 +52,31 @@ const InitialModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      imageUrl: "",
+      image: null,
     },
   });
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    try {
+      const imgRes = await imageUpload(values.image as File, {
+        CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+        CLOUDINARY_UPLOAD_PRESET:
+          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+      });
+
+      await axios.post("/api/servers", {
+        ...values,
+        image: imgRes.url,
+        cldPublicId: imgRes.public_id,
+      });
+
+      form.reset();
+      router.refresh();
+      window.location.reload()
+    } catch (error) {}
+
     console.log(values);
   };
 
@@ -102,16 +129,17 @@ const InitialModal = () => {
                 <div className="flex text-center items-center justify-center">
                   <FormField
                     control={form.control}
-                    name="imageUrl"
-                    render={({ field }) => (
+                    name="image"
+                    render={() => (
                       <FormItem>
                         <FormControl>
                           <FileUpload
                             endpoint="serverImage"
-                            value={field.value}
-                            onChange={field.onChange}
+                            file={file}
+                            setFile={setFile}
                           />
                         </FormControl>
+                        <FormMessage />
                       </FormItem>
                     )}
                   />

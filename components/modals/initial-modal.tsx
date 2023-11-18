@@ -44,33 +44,39 @@ const InitialModal = () => {
     console.log(values);
   };
   return (
-<div>
-<Dialog open>
-      <DialogContent className="bg-white text-black p-0 overflow-hidden">
-        <DialogHeader className="pt-8 px-6">
-          <DialogTitle className="text-2xl text-center font-bold">
-            Customize your server
-          </DialogTitle>
-          <DialogDescription className="text-center text-zinc-500">
-            Give your server a personality with a name and an image. you can
-            always change it later.
-          </DialogDescription>
-        </DialogHeader>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="space-y-8"
-          >
-            <div className="space-y-8 px-6">
-              <div className="flex text-center items-center justify-center">
-                TODO: Image Upload
+    <div>
+      <Dialog open>
+        <DialogContent className="bg-white text-black p-0 overflow-hidden">
+          <DialogHeader className="pt-8 px-6">
+            <DialogTitle className="text-2xl text-center font-bold">
+              Customize your server
+            </DialogTitle>
+            <DialogDescription className="text-center text-zinc-500">
+              Give your server a personality with a name and an image. you can
+              always change it later.
+            </DialogDescription>
+          </DialogHeader>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <div className="space-y-8 px-6">
+                <div className="flex text-center items-center justify-center">
+                  TODO: Image Upload
+                </div>
+
+                <FormField control={form.control} name="name" render={({field}) => (
+                  <FormItem>
+                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">Sever Name</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter server name" disabled={isLoading} className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0" />
+                    </FormControl>
+                  </FormItem>
+                )} />
               </div>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
-</div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
+    </div>
   );
 };
 

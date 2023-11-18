@@ -2,8 +2,9 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import dynamic from "next/dynamic";
+import { CldUploadButton } from "next-cloudinary";
 
 import {
   Dialog,
@@ -31,6 +32,12 @@ const formSchema = z.object({
 });
 
 const InitialModal = () => {
+  const [isMounted, setIsMounted] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -44,6 +51,37 @@ const InitialModal = () => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     console.log(values);
   };
+
+  if (!isMounted) return null;
+
+  // const handleUpload = (result: any) => {
+  //   axios.post("/api/messages", {
+  //     conversationId,
+  //     image: result?.info?.secure_url,
+  //   }).then(({data}) => {
+
+  //     setMessages((current) => [...current, data]);
+
+  //     if (conversation.userIds.length > 2) {
+  //       conversation.userIds
+  //         // Get the other users
+  //         .filter((userId) => userId !== session.data?.user.id)
+  //         .forEach((userId) => {
+  //           socket?.emit("sendMessage", {
+  //             message: data,
+  //             receiverId: userId,
+  //           });
+  //         });
+  //     } else {
+  //       socket?.emit("sendMessage", {
+  //         message: data,
+  //         receiverId: otherUser.id,
+  //       });
+  //     }
+
+  //   })
+
+  // };
   return (
     <div>
       <Dialog open>
@@ -62,6 +100,15 @@ const InitialModal = () => {
               <div className="space-y-8 px-6">
                 <div className="flex text-center items-center justify-center">
                   TODO: Image Upload
+                  <CldUploadButton
+                    options={{
+                      maxFiles: 1,
+                    }}
+                    // onUpload={handleUpload}
+                    uploadPreset={
+                      process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET
+                    }
+                  ></CldUploadButton>
                 </div>
 
                 <FormField
@@ -80,13 +127,16 @@ const InitialModal = () => {
                           {...field}
                         />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
 
               <DialogFooter className="bg-gray-100 px-6 py-4">
-                <Button disabled={isLoading}>Create</Button>
+                <Button variant={"primary"} disabled={isLoading}>
+                  Create
+                </Button>
               </DialogFooter>
             </form>
           </Form>
@@ -96,4 +146,4 @@ const InitialModal = () => {
   );
 };
 
-export default dynamic (() => Promise.resolve(InitialModal), {ssr: false})
+export default InitialModal;

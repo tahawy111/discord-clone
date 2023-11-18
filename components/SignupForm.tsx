@@ -87,7 +87,7 @@ export default function SignupForm({}: AuthFormProps) {
           />
 
           <div className="">
-            <Button variant={"rose"} isLoading={isLoading} className="w-full">
+            <Button variant={"rose"} disabled={isLoading} className="w-full">
               Register
             </Button>
           </div>

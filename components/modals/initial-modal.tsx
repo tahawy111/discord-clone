@@ -3,6 +3,7 @@
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import dynamic from "next/dynamic";
 
 import {
   Dialog,
@@ -63,15 +64,30 @@ const InitialModal = () => {
                   TODO: Image Upload
                 </div>
 
-                <FormField control={form.control} name="name" render={({field}) => (
-                  <FormItem>
-                    <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">Sever Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter server name" disabled={isLoading} className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0" />
-                    </FormControl>
-                  </FormItem>
-                )} />
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="uppercase text-xs font-bold text-zinc-500 dark:text-secondary/70">
+                        Sever Name
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter server name"
+                          disabled={isLoading}
+                          className="bg-zinc-300/50 border-0 focus-visible:ring-0 text-black focus-visible:ring-offset-0"
+                          {...field}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
               </div>
+
+              <DialogFooter className="bg-gray-100 px-6 py-4">
+                <Button disabled={isLoading}>Create</Button>
+              </DialogFooter>
             </form>
           </Form>
         </DialogContent>
@@ -80,4 +96,4 @@ const InitialModal = () => {
   );
 };
 
-export default InitialModal;
+export default dynamic (() => Promise.resolve(InitialModal), {ssr: false})

@@ -80,7 +80,7 @@ export default function LoginForm({}: AuthFormProps) {
           />
 
           <div className="">
-            <Button isLoading={isLoading} variant={"sky"} className="w-full">
+            <Button disabled={isLoading} variant={"sky"} className="w-full">
               Login
             </Button>
           </div>

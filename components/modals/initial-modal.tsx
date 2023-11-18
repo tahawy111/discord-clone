@@ -32,11 +32,7 @@ import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Server name is required." }),
-  image: z
-    .any()
-    .refine((data) => data !== undefined && data !== null && data !== "", {
-      message: "Server image is required.",
-    }),
+  image: z.string().min(1, { message: "Server image is required." }),
 });
 
 const InitialModal = () => {
@@ -52,32 +48,31 @@ const InitialModal = () => {
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      image: null,
+      image: "",
     },
   });
 
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    console.log(values);
     try {
-      const imgRes = await imageUpload(values.image as File, {
+      const imgRes = await imageUpload(file as File, {
         CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
         CLOUDINARY_UPLOAD_PRESET:
           process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
       });
 
       await axios.post("/api/servers", {
-        ...values,
-        image: imgRes.url,
+        name: values.name,
+        imageUrl: imgRes.url,
         cldPublicId: imgRes.public_id,
       });
 
       form.reset();
       router.refresh();
-      window.location.reload()
+      window.location.reload();
     } catch (error) {}
-
-    console.log(values);
   };
 
   if (!isMounted) return null;
@@ -137,6 +132,7 @@ const InitialModal = () => {
                             endpoint="serverImage"
                             file={file}
                             setFile={setFile}
+                            setValue={form.setValue}
                           />
                         </FormControl>
                         <FormMessage />

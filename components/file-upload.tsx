@@ -3,21 +3,31 @@
 import { UploadCloud, X } from "lucide-react";
 import Image from "next/image";
 import { ChangeEvent, Dispatch, SetStateAction, useId, useState } from "react";
+import { UseFormSetValue } from "react-hook-form";
 
 interface FileUploadProps {
   endpoint: "messageFile" | "serverImage";
   file?: File;
   setFile: Dispatch<SetStateAction<File | undefined>>;
+  setValue: UseFormSetValue<{
+    name: string;
+    image: string;
+  }>;
 }
 
-const FileUpload = ({ endpoint, file, setFile }: FileUploadProps) => {
+const FileUpload = ({ endpoint, file, setFile, setValue }: FileUploadProps) => {
   const inputId = useId();
 
   const handleImageInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fileInput = e.target.files![0];
     setFile(fileInput);
-  };
 
+    if (e.target.value === undefined) {
+      setValue("image", "");
+    } else {
+      setValue("image", "modified");
+    }
+  };
 
   return (
     <div className="rounded-lg w-96">

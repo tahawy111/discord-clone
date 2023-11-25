@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -28,20 +28,19 @@ import FileUpload from "@/components/file-upload";
 import { imageUpload } from "@/lib/ImageUpload";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Server name is required." }),
   image: z.string().min(1, { message: "Server image is required." }),
 });
 
-const InitialModal = () => {
-  const [isMounted, setIsMounted] = useState<boolean>(false);
+const CreateServerModal = () => {
+  const { isOpen, onClose, onOpen, type } = useModal();
   const [file, setFile] = useState<File>();
   const router = useRouter();
 
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
+  const isModalOpen = isOpen && type === "createServer";
 
   const form = useForm({
     resolver: zodResolver(formSchema),
@@ -70,43 +69,18 @@ const InitialModal = () => {
 
       form.reset();
       router.refresh();
-      window.location.reload();
+      onClose();
     } catch (error) {}
   };
 
-  if (!isMounted) return null;
+  const handleClose = () => {
+    form.reset();
+    onClose();
+  };
 
-  // const handleUpload = (result: any) => {
-  //   axios.post("/api/messages", {
-  //     conversationId,
-  //     image: result?.info?.secure_url,
-  //   }).then(({data}) => {
-
-  //     setMessages((current) => [...current, data]);
-
-  //     if (conversation.userIds.length > 2) {
-  //       conversation.userIds
-  //         // Get the other users
-  //         .filter((userId) => userId !== session.data?.user.id)
-  //         .forEach((userId) => {
-  //           socket?.emit("sendMessage", {
-  //             message: data,
-  //             receiverId: userId,
-  //           });
-  //         });
-  //     } else {
-  //       socket?.emit("sendMessage", {
-  //         message: data,
-  //         receiverId: otherUser.id,
-  //       });
-  //     }
-
-  //   })
-
-  // };
   return (
     <div>
-      <Dialog open>
+      <Dialog open={isModalOpen} onOpenChange={handleClose}>
         <DialogContent className="bg-white text-black p-0 overflow-hidden">
           <DialogHeader className="pt-8 px-6">
             <DialogTitle className="text-2xl text-center font-bold">
@@ -163,7 +137,11 @@ const InitialModal = () => {
               </div>
 
               <DialogFooter className="bg-gray-100 px-6 py-4">
-                <Button isLoading={isLoading} variant={"primary"} disabled={isLoading}>
+                <Button
+                  isLoading={isLoading}
+                  variant={"primary"}
+                  disabled={isLoading}
+                >
                   Create
                 </Button>
               </DialogFooter>
@@ -175,4 +153,4 @@ const InitialModal = () => {
   );
 };
 
-export default InitialModal;
+export default CreateServerModal;

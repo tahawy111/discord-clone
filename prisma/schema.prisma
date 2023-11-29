@@ -65,7 +65,7 @@ model Server {
   name        String
   imageUrl    String    @db.Text
   cldPublicId String    @db.Text
-  inviteCode  String    @db.Text
+  inviteCode  String    @unique
   userId      String
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt   DateTime  @default(now())
@@ -84,7 +84,7 @@ model Member {
   id        String     @id @default(uuid())
   role      MemberRole @default(GUEST)
   userId    String
-  User      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   serverId  String
   server    Server     @relation(fields: [serverId], references: [id], onDelete: Cascade)
   createdAt DateTime   @default(now())

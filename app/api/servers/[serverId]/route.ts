@@ -8,6 +8,7 @@ export async function PATCH(
 ) {
   try {
     const session = await getAuthSession();
+    const { name, imageUrl } = await req.json();
 
     if (!session?.user)
       return new NextResponse("Unauthorized", { status: 401 });
@@ -20,14 +21,12 @@ export async function PATCH(
         id: params.serverId,
         userId: session.user.id,
       },
-      data: {
-        inviteCode: crypto.randomUUID(),
-      },
+      data: { name, imageUrl },
     });
 
     return NextResponse.json(server);
   } catch (error) {
-    console.log("[SERVER_ID]", error);
+    console.log("[SERVER_ID_PATCH]", error);
 
     return new NextResponse("Internal Error", { status: 500 });
   }

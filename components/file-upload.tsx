@@ -7,8 +7,8 @@ import { UseFormSetValue } from "react-hook-form";
 
 interface FileUploadProps {
   endpoint: "messageFile" | "serverImage";
-  file?: File;
-  setFile: Dispatch<SetStateAction<File | undefined>>;
+  file?: File | string;
+  setFile: Dispatch<SetStateAction<File | undefined | string>>;
   setValue: UseFormSetValue<{
     name: string;
     image: string;
@@ -37,7 +37,7 @@ const FileUpload = ({ endpoint, file, setFile, setValue }: FileUploadProps) => {
         className="hidden"
         id={inputId}
       />
-      {!file && typeof file === "undefined" && (
+      {!file && typeof file === "undefined" ? (
         <label
           htmlFor={inputId}
           className="w-full h-full flex justify-center items-center flex-col border-gray-900/10 border py-10"
@@ -49,12 +49,11 @@ const FileUpload = ({ endpoint, file, setFile, setValue }: FileUploadProps) => {
           </h2>
           <p className="text-sm text-gray-600">Image (4MB)</p>
         </label>
-      )}
-      {file && typeof file !== "string" && (
+      ) : (
         <div className="relative h-20 w-20 mt-5 mx-auto">
           <Image
             className="rounded-full"
-            src={URL.createObjectURL(file)}
+            src={typeof file === "string" ? file : URL.createObjectURL(file)}
             alt="Image Server"
             fill
           />

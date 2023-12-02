@@ -36,7 +36,7 @@ const formSchema = z.object({
 
 const InitialModal = () => {
   const [isMounted, setIsMounted] = useState<boolean>(false);
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | string>();
   const router = useRouter();
 
   useEffect(() => {

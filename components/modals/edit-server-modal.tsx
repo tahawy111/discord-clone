@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -25,7 +25,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import FileUpload from "@/components/file-upload";
-import { imageUpload } from "@/lib/ImageUpload";
+import { handleDeleteImage, imageUpload } from "@/lib/ImageUpload";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
@@ -36,10 +36,12 @@ const formSchema = z.object({
 });
 
 const EditServerModal = () => {
-  const { isOpen, onClose, onOpen, type } = useModal();
-  const [file, setFile] = useState<File>();
+  const { isOpen, onClose, onOpen, type, data } = useModal();
+  const [file, setFile] = useState<File | string>();
+  const [cldPublicId, setCldPublicId] = useState<string>("");
   const router = useRouter();
 
+  const { server } = data;
   const isModalOpen = isOpen && type === "editServer";
 
   const form = useForm({
@@ -50,18 +52,48 @@ const EditServerModal = () => {
     },
   });
 
+  useEffect(() => {
+    if (server) {
+      console.log(server);
+      form.setValue("name", server.name);
+      setFile(server.imageUrl);
+      form.setValue("image", server.imageUrl);
+      setCldPublicId(server.cldPublicId);
+    }
+  }, [form, server]);
+
   const isLoading = form.formState.isSubmitting;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    console.log(values);
     try {
-      const imgRes = await imageUpload(file as File, {
-        CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
-        CLOUDINARY_UPLOAD_PRESET:
-          process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
-      });
+      let imgRes: {
+        url: string;
+        public_id: string;
+      } = {
+        url: "",
+        public_id: "",
+      };
 
-      await axios.post("/api/servers", {
+      if (typeof file === "object") {
+        // Delete old image
+        await handleDeleteImage(cldPublicId, {
+          CLOUDINARY_API_KEY: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!,
+          CLOUDINARY_API_SECRET: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET!,
+          CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+        });
+
+        // Upload new image
+        imgRes = await imageUpload(file as File, {
+          CLOUDINARY_CLOUD_NAME: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
+          CLOUDINARY_UPLOAD_PRESET:
+            process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET!,
+        });
+      } else {
+        imgRes.url = file as string;
+        imgRes.public_id = cldPublicId;
+      }
+
+      await axios.patch(`/api/servers/${server?.id}`, {
         name: values.name,
         imageUrl: imgRes.url,
         cldPublicId: imgRes.public_id,
@@ -70,7 +102,9 @@ const EditServerModal = () => {
       form.reset();
       router.refresh();
       onClose();
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleClose = () => {
@@ -142,7 +176,7 @@ const EditServerModal = () => {
                   variant={"primary"}
                   disabled={isLoading}
                 >
-                  Create
+                  Save
                 </Button>
               </DialogFooter>
             </form>

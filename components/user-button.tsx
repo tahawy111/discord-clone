@@ -27,7 +27,7 @@ export default function UserButton({ className, ...props }: UserButtonProps) {
           <Image
             className="rounded-full"
             fill
-            src={(data.user?.image && data.user?.image) || ""}
+            src={(data.user?.image && data.user.image) || ""}
             alt="Profile Picture"
           />
         )}

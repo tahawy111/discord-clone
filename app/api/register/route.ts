@@ -12,7 +12,13 @@ export async function POST(req: Request) {
     const hashedPassword = await bcrypt.hash(password, 12);
 
     const user = await db.user.create({
-      data: { email, name, hashedPassword },
+      data: {
+        email,
+        name,
+        hashedPassword,
+        image:
+          "https://res.cloudinary.com/dzdqy3wfg/image/upload/v1701478265/discord-clone/tkvtbubm0fbiwnz5bqlr.jpg",
+      },
     });
 
     return new Response(JSON.stringify(user));

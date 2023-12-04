@@ -1,17 +1,12 @@
-"use client";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-function MainLayout({ children }: { children: React.ReactNode }) {
-  const { status, data } = useSession();
-  const router = useRouter();
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-    }
-    console.log(data);
-  }, [status]);
+async function MainLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession();
+
+  if (!session || !session.user) {
+    redirect("/login");
+  }
 
   return <div className="h-full">{children}</div>;
 }

@@ -1,17 +1,13 @@
-"use client";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-function AuthLayout({ children }: { children: React.ReactNode }) {
-  const { status } = useSession();
-  const router = useRouter();
+async function AuthLayout({ children }: { children: React.ReactNode }) {
+  const session = await getServerSession();
 
-  useEffect(() => {
-    if (status === "authenticated") {
-      router.push("/");
-    }
-  }, [status]);
+  if (session && session.user) {
+    redirect("/");
+  }
+
   return <div className="h-full">{children}</div>;
 }
 

@@ -37,7 +37,7 @@ const formSchema = z.object({
 
 const CreateServerModal = () => {
   const { isOpen, onClose, onOpen, type } = useModal();
-  const [file, setFile] = useState<File>();
+  const [file, setFile] = useState<File | string>();
   const router = useRouter();
 
   const isModalOpen = isOpen && type === "createServer";
@@ -137,13 +137,13 @@ const CreateServerModal = () => {
               </div>
 
               <DialogFooter className="bg-gray-100 px-6 py-4">
-                <Button
+                {/* <Button
                   isLoading={isLoading}
                   variant={"primary"}
                   disabled={isLoading}
                 >
                   Create
-                </Button>
+                </Button> */}
               </DialogFooter>
             </form>
           </Form>

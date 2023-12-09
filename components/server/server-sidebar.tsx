@@ -36,13 +36,13 @@ export default async function ServerSidebar({ serverId }: ServerSidebarProps) {
   });
 
   const textChannels = server?.channels.filter(
-    (channel) => channel.channelType === ChannelType.TEXT
+    (channel) => channel.type === ChannelType.TEXT
   );
   const audioChannels = server?.channels.filter(
-    (channel) => channel.channelType === ChannelType.AUDIO
+    (channel) => channel.type === ChannelType.AUDIO
   );
   const videoChannels = server?.channels.filter(
-    (channel) => channel.channelType === ChannelType.VIDEO
+    (channel) => channel.type === ChannelType.VIDEO
   );
 
   const members = server?.members.filter(

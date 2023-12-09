@@ -52,7 +52,6 @@ const CreateChannelModal = () => {
   const [file, setFile] = useState<File | string>();
   const router = useRouter();
   const params = useParams();
-  console.log(params);
 
   const isModalOpen = isOpen && type === "createChannel";
 

@@ -19,7 +19,6 @@ export const imageUpload = async (
 ) => {
   const formData = new FormData();
 
-  console.log({ CLOUDINARY_CLOUD_NAME, CLOUDINARY_UPLOAD_PRESET });
 
   formData.append("file", file);
   formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);

@@ -2,7 +2,7 @@
 
 import * as z from "zod";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
@@ -48,20 +48,30 @@ const formSchema = z.object({
 });
 
 const CreateChannelModal = () => {
-  const { isOpen, onClose, onOpen, type } = useModal();
-  const [file, setFile] = useState<File | string>();
+  const { isOpen, onClose, onOpen, type, data } = useModal();
   const router = useRouter();
   const params = useParams();
-
-  const isModalOpen = isOpen && type === "createChannel";
-
+  const { channelType } = data;
+  
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
       name: "",
-      type: ChannelType.TEXT,
+      type: channelType || ChannelType.TEXT,
     },
   });
+
+  useEffect(() => {
+    if (channelType) {
+      form.setValue("type", channelType);
+    } else {
+      form.setValue("type", ChannelType.TEXT);
+    }
+  }, [channelType, form]);
+
+  const isModalOpen = isOpen && type === "createChannel";
+
+
 
   const isLoading = form.formState.isSubmitting;
 

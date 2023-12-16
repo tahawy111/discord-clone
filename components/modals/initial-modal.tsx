@@ -76,34 +76,6 @@ const InitialModal = () => {
 
   if (!isMounted) return null;
 
-  // const handleUpload = (result: any) => {
-  //   axios.post("/api/messages", {
-  //     conversationId,
-  //     image: result?.info?.secure_url,
-  //   }).then(({data}) => {
-
-  //     setMessages((current) => [...current, data]);
-
-  //     if (conversation.userIds.length > 2) {
-  //       conversation.userIds
-  //         // Get the other users
-  //         .filter((userId) => userId !== session.data?.user.id)
-  //         .forEach((userId) => {
-  //           socket?.emit("sendMessage", {
-  //             message: data,
-  //             receiverId: userId,
-  //           });
-  //         });
-  //     } else {
-  //       socket?.emit("sendMessage", {
-  //         message: data,
-  //         receiverId: otherUser.id,
-  //       });
-  //     }
-
-  //   })
-
-  // };
   return (
     <div>
       <Dialog open>

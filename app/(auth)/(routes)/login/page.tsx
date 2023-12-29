@@ -5,7 +5,7 @@ interface LoginPageProps {}
 
 export default function LoginPage({}: LoginPageProps) {
   return (
-    <div className="flex items-center h-full">
+    <div className="flex items-center justify-center h-full">
       <LoginForm />
     </div>
   );

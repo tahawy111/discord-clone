@@ -9,7 +9,7 @@ interface ServerIdPageProps {
   };
 }
 
-const ServerPage = async ({ params }: ServerIdPageProps) => {
+export default async function ServerIdPage({ params }: ServerIdPageProps) {
   const session = await getAuthSession();
 
   if (!session?.user) {
@@ -46,4 +46,3 @@ const ServerPage = async ({ params }: ServerIdPageProps) => {
   return redirect(`/servers/${params.serverId}/channels/${initialChannel?.id}`);
 };
 
-export default ServerPage;

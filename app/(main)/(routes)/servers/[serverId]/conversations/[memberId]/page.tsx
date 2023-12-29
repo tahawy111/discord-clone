@@ -1,5 +1,11 @@
-const MemberIdPage = () => {
-  return <div>MemberIdPage</div>;
-};
+import {} from 'react';
 
-export default MemberIdPage;
+interface MemberIdPageProps {
+  
+}
+
+export default function MemberIdPage({ }: MemberIdPageProps) {
+    return (
+        <div>MemberIdPage</div>
+    )
+}

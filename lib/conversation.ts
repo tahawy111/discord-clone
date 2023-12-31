@@ -11,6 +11,11 @@ const findConversation = async (memberOneId: string, memberTwoId: string) => {
           user: true,
         },
       },
+      memberTwo: {
+        include: {
+          user: true,
+        },
+      },
     },
   });
 };

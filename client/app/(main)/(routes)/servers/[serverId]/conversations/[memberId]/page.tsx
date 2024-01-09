@@ -1,9 +1,9 @@
 import ChatHeader from "@/components/chat/chat-header";
+import ChatInput from "@/components/chat/chat-input";
 import { getAuthSession } from "@/lib/auth";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
-import {} from "react";
 
 interface MemberIdPageProps {
   params: {
@@ -44,7 +44,16 @@ export default async function MemberIdPage({ params }: MemberIdPageProps) {
 
   return (
     <div className="bg-white dark:bg-[#313338] flex flex-col h-full">
-      <ChatHeader name={otherMember.user.name} imageUrl={otherMember.user.image} serverId={params.serverId} type="conversation" />
+      <ChatHeader
+        name={otherMember.user.name}
+        imageUrl={otherMember.user.image}
+        serverId={params.serverId}
+        type="conversation"
+      />
+
+      <div className="flex-1">Future Messages</div>
+
+      {/* <ChatInput /> */}
     </div>
   );
 }

@@ -59,6 +59,8 @@ io.on("connection", (socket) => {
     "sendMessage",
     ({ message, receiverId }: { message: MessageType; receiverId: string }) => {
       const user = getUser(receiverId);
+      console.log(message);
+      
 
       if (!user) return; //console.log("user is not exist on socket");
 

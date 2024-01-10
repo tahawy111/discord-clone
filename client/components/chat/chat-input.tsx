@@ -7,6 +7,8 @@ import { Plus, Smile } from "lucide-react";
 import { Input } from "../ui/input";
 import qs from "query-string";
 import axios from "axios";
+import { useSocket } from "../providers/socket-provider";
+import { useModal } from "@/hooks/use-modal-store";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -31,8 +33,10 @@ export default function ChatInput({
       content: "",
     },
   });
+  const { socket } = useSocket();
 
   const isLoading = form.formState.isSubmitting;
+  const { onOpen } = useModal();
 
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     try {
@@ -41,7 +45,12 @@ export default function ChatInput({
         query,
       });
 
-      await axios.post(url, value);
+      const response = await axios.post(url, value);
+
+      socket?.emit("sendMessage", {
+        message: response.data,
+        receiverId: `chat:${query.channelId}:messages`,
+      });
     } catch (error) {
       console.log(error);
     }
@@ -59,7 +68,7 @@ export default function ChatInput({
                 <div className="relative p-4 pb-6">
                   <button
                     type="button"
-                    onClick={() => {}}
+                    onClick={() => onOpen("messageFile", { apiUrl, query })}
                     className="absolute top-7 left-8  h-[24px] w-[24px] bg-zinc-500 dark:bg-zinc-400 hover:bg-zinc-600 dark:hover:bg-zinc-300 transition rounded-full p-1 flex items-center justify-center"
                   >
                     <Plus className="text-white dark:text-[#313338]" />

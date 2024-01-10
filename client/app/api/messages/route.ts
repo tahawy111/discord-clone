@@ -1,87 +1,83 @@
-import getCurrentUser from "@/app/actions/getCurrentUser";
-import prisma from "@/app/libs/prismadb";
+import { NextResponse } from "next/server";
+import { Message } from "@prisma/client";
 
-export async function POST(req: Request) {
+import { db } from "@/lib/db";
+import { getAuthSession } from "@/lib/auth";
+
+const MESSAGES_BATCH = 10;
+
+export async function GET(
+  req: Request
+) {
   try {
-    const body = await req.json();
-    const { conversationId, message, image } = body;
-    const currentUser = await getCurrentUser();
+    const session = await getAuthSession()
+    const { searchParams } = new URL(req.url);
 
-    if (!currentUser?.id || !currentUser?.email) {
-      return new Response("Unauthorized", { status: 401 });
+    const cursor = searchParams.get("cursor");
+    const channelId = searchParams.get("channelId");
+
+    if (!session?.user) {
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+  
+    if (!channelId) {
+      return new NextResponse("Channel ID missing", { status: 400 });
     }
 
-    const newMessage = await prisma.message.create({
-      data: {
-        body: message,
-        image,
-        conversation: {
-          connect: {
-            id: conversationId,
-          },
-        },
-        sender: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
-        seen: {
-          connect: {
-            id: currentUser.id,
-          },
-        },
-      },
-      include: { seen: true, sender: true },
-    });
+    let messages: Message[] = [];
 
-    const updatedConversation = await prisma.conversation.update({
-      where: { id: conversationId },
-      data: {
-        lastMessageAt: new Date(),
-        messages: {
-          connect: {
-            id: newMessage.id,
-          },
+    if (cursor) {
+      messages = await db.message.findMany({
+        take: MESSAGES_BATCH,
+        skip: 1,
+        cursor: {
+          id: cursor,
         },
-      },
-      include: {
-        users: true,
-        messages: {
-          include: {
-            seen: true,
-          },
+        where: {
+          channelId,
         },
-      },
-    });
+        include: {
+          member: {
+            include: {
+              user: true,
+            }
+          }
+        },
+        orderBy: {
+          createdAt: "desc",
+        }
+      })
+    } else {
+      messages = await db.message.findMany({
+        take: MESSAGES_BATCH,
+        where: {
+          channelId,
+        },
+        include: {
+          member: {
+            include: {
+              user: true,
+            }
+          }
+        },
+        orderBy: {
+          createdAt: "desc",
+        }
+      });
+    }
 
-    return new Response(JSON.stringify(newMessage));
+    let nextCursor = null;
+
+    if (messages.length === MESSAGES_BATCH) {
+      nextCursor = messages[MESSAGES_BATCH - 1].id;
+    }
+
+    return NextResponse.json({
+      items: messages,
+      nextCursor
+    });
   } catch (error) {
-    console.log(error, "ERROR_MESSAGES");
-    return new Response("InternalError", { status: 500 });
-  }
-}
-
-export async function GET(req: Request) {
-  try {
-    const currentUser = await getCurrentUser();
-    const conversationId = new URL(req.url).searchParams.get("conversationId");
-    if (!conversationId) {
-      return new Response("Invalid data passed", { status: 401 });
-    }
-
-    if (!currentUser?.id || !currentUser?.email) {
-      return new Response("Unauthorized", { status: 401 });
-    }
-
-    const messages = await prisma.message.findMany({
-      where: { conversationId },
-      include: { sender: true, seen: true },
-      orderBy: { createdAt: "asc" },
-    });
-
-    return new Response(JSON.stringify(messages));
-  } catch (error) {
-    console.log(error, "ERROR_MESSAGES");
-    return new Response("InternalError", { status: 500 });
+    console.log("[MESSAGES_GET]", error);
+    return new NextResponse("Internal Error", { status: 500 });
   }
 }

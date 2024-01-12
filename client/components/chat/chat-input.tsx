@@ -9,6 +9,8 @@ import qs from "query-string";
 import axios from "axios";
 import { useSocket } from "../providers/socket-provider";
 import { useModal } from "@/hooks/use-modal-store";
+import EmojiPicker from "../emoji-picker";
+import { useRouter } from "next/navigation";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -34,7 +36,7 @@ export default function ChatInput({
     },
   });
   const { socket } = useSocket();
-
+  const router = useRouter();
   const isLoading = form.formState.isSubmitting;
   const { onOpen } = useModal();
 
@@ -51,6 +53,9 @@ export default function ChatInput({
         message: response.data,
         receiverId: `chat:${query.channelId}:messages`,
       });
+
+      form.reset();
+      router.refresh();
     } catch (error) {
       console.log(error);
     }
@@ -82,7 +87,11 @@ export default function ChatInput({
                     {...field}
                   />
                   <div className="absolute top-7 right-8">
-                    <Smile />
+                    <EmojiPicker
+                      onChange={(emoji: string) =>
+                        field.onChange(`${field.value}${emoji}`)
+                      }
+                    />
                   </div>
                 </div>
               </FormControl>

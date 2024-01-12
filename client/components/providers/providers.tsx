@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import ModalProvider from "@/components/providers/modal-provider";
 import { SocketProvider } from "@/components/providers/socket-provider";
+import QueryProvider from "@/components/providers/query-provider";
 
 function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -20,7 +21,7 @@ function Providers({ children }: { children: React.ReactNode }) {
         >
           <SocketProvider>
             <ModalProvider />
-            {children}
+            <QueryProvider>{children}</QueryProvider>
           </SocketProvider>
         </ThemeProvider>
       </SessionProvider>

@@ -56,7 +56,7 @@ export async function POST(req: Request) {
       (member) => member.userId === session.user.id
     );
 
-    if (!channel) {
+    if (!member) {
       return new NextResponse("Member not found", { status: 404 });
     }
 

@@ -66,7 +66,7 @@ export default function ChatItem({
   const onMemberClick = () => {
     if (member.id === currentMember.id) return;
 
-    router.push(`/server/${params?.serverId}/conversations/${member.id}`);
+    router.push(`/servers/${params?.serverId}/conversations/${member.id}`);
   };
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -136,7 +136,10 @@ export default function ChatItem({
         <div className="flex flex-col w-full">
           <div className="flex items-center gap-x-2">
             <div className="flex items-center gap-x-2">
-              <p className="font-semibold text-sm hover:underline cursor-pointer">
+              <p
+                onClick={onMemberClick}
+                className="font-semibold text-sm hover:underline cursor-pointer"
+              >
                 {member.user.name}
               </p>
               <ActionTooltip label={member.role}>

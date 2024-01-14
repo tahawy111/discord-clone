@@ -23,64 +23,68 @@ export const useChatSocket = ({
   const { socket } = useSocket();
   const queryClient = useQueryClient();
 
-  console.log({ addKey, queryKey, updateKey });
-
   useEffect(() => {
-    console.log("use chat socket");
-
     if (!socket) return;
 
-    socket.on(updateKey, (message: MessageWithMemberWithUser) => {
-      console.log(message);
+    socket.on(
+      "getMessage",
+      ({
+        message,
+        key,
+      }: {
+        message: MessageWithMemberWithUser;
+        key: string;
+      }) => {
+        console.log({ message, key });
+        if (key.includes("update")) {
+          queryClient.setQueryData([queryKey], (oldData: any) => {
+            if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+              return oldData;
+            }
 
-      queryClient.setQueryData([queryKey], (oldData: any) => {
-        if (!oldData || !oldData.pages || oldData.pages.length === 0) {
-          return oldData;
+            const newData = oldData.pages.map((page: any) => {
+              return {
+                ...page,
+                items: page.item.map((item: MessageWithMemberWithUser) => {
+                  if (item.id === message.id) {
+                    return message;
+                  }
+                }),
+              };
+            });
+
+            return { ...oldData, pages: newData };
+          });
+        } else {
+          queryClient.setQueryData([queryKey], (oldData: any) => {
+            if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+              return {
+                pages: [
+                  {
+                    items: [message],
+                  },
+                ],
+              };
+            }
+
+            const newData = [...oldData.pages];
+
+            newData[0] = {
+              ...newData[0],
+              items: [message, ...newData[0].items],
+            };
+
+            return {
+              ...oldData,
+              pages: newData,
+            };
+          });
         }
-
-        const newData = oldData.pages.map((page: any) => {
-          return {
-            ...page,
-            items: page.item.map((item: MessageWithMemberWithUser) => {
-              if (item.id === message.id) {
-                return message;
-              }
-            }),
-          };
-        });
-
-        return { ...oldData, pages: newData };
-      });
-    });
-
-    socket.on(addKey, (message: MessageWithMemberWithUser) => {
-      console.log(message);
-
-      queryClient.setQueryData([queryKey], (oldData: any) => {
-        if (!oldData || !oldData.pages || oldData.pages.length === 0) {
-          return {
-            pages: [
-              {
-                items: [message],
-              },
-            ],
-          };
-        }
-
-        const newData = [...oldData.pages];
-
-        newData[0] = { ...newData[0], items: [message, ...newData[0].items] };
-
-        return {
-          ...oldData,
-          pages: newData,
-        };
-      });
-    });
+      }
+    );
 
     return () => {
-      socket.off(addKey);
-      socket.off(updateKey);
+      socket.off("getMessage");
     };
   }, [queryClient, addKey, queryKey, socket, updateKey]);
 };

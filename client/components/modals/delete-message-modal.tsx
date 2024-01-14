@@ -21,7 +21,6 @@ const DeleteMessageModal = () => {
   const { apiUrl, query } = data;
   const { socket } = useSocket();
 
-
   const isModalOpen = isOpen && type === "deleteMessage";
 
   const [isLoading, setIsLoading] = useState(false);
@@ -34,10 +33,10 @@ const DeleteMessageModal = () => {
         query,
       });
 
-     const response =  await axios.delete(url);
+      const response = await axios.delete(url);
 
-     const channelKey = `chat:${query?.channelId}:messages`;
-     socket?.emit(channelKey, { message: response.data });
+      const channelKey = `chat:${query?.channelId}:messages`;
+      socket?.emit("sendMessage", { message: response.data, key: channelKey });
 
       onClose();
     } catch (error) {

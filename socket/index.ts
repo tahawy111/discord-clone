@@ -85,6 +85,19 @@ io.on("connection", (socket) => {
 io.on("connection", (socket) => {
   // When connect
   console.log("a user connected.");
+
+  socket.on(
+    "sendMessage",
+    ({ message, key }: { message: any; key: string }) => {
+      console.log({ message, key });
+
+      io.emit("getMessage", { message, key });
+    }
+  );
+
+  socket.on("disconnect", () => {
+    console.log("a user disconnected.");
+  });
 });
 
 httpServer.listen(process.env.PORT || 8900);

@@ -81,6 +81,9 @@ export default function ChatItem({
   const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
+    if (isLoading) {
+      return;
+    }
     try {
       setIsLoading(true);
       const url = qs.stringifyUrl({

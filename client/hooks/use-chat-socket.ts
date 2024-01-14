@@ -35,13 +35,30 @@ export const useChatSocket = ({
         message: MessageWithMemberWithUser;
         key: string;
       }) => {
-        console.log({ message, key });
         if (key.includes("update")) {
+          // queryClient.setQueryData([queryKey], (oldData: any) => {
+          //   if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+          //     return oldData;
+          //   }
+
+          //   const newData = oldData.pages.map((page: any) => {
+          //     return {
+          //       ...page,
+          //       items: page.items.map((item: MessageWithMemberWithUser) => {
+          //         if (item.id === message.id) {
+          //           return message;
+          //         }
+          //       }),
+          //     };
+          //   });
+
+          //   return { ...oldData, pages: newData };
+          // });
           queryClient.setQueryData([queryKey], (oldData: any) => {
             if (!oldData || !oldData.pages || oldData.pages.length === 0) {
               return oldData;
             }
-
+    
             const newData = oldData.pages.map((page: any) => {
               return {
                 ...page,
@@ -49,31 +66,59 @@ export const useChatSocket = ({
                   if (item.id === message.id) {
                     return message;
                   }
-                }),
-              };
+                  return item;
+                })
+              }
             });
-
-            return { ...oldData, pages: newData };
-          });
+    
+            return {
+              ...oldData,
+              pages: newData,
+            }
+          })
         } else {
+          // queryClient.setQueryData([queryKey], (oldData: any) => {
+          //   if (!oldData || !oldData.pages || oldData.pages.length === 0) {
+          //     return {
+          //       pages: [
+          //         {
+          //           items: [message],
+          //         },
+          //       ],
+          //     };
+          //   }
+
+          //   const newData = [...oldData.pages];
+
+          //   newData[0] = {
+          //     ...newData[0],
+          //     items: [message, ...newData[0].items],
+          //   };
+
+          //   return {
+          //     ...oldData,
+          //     pages: newData,
+          //   };
+          // });
           queryClient.setQueryData([queryKey], (oldData: any) => {
             if (!oldData || !oldData.pages || oldData.pages.length === 0) {
               return {
-                pages: [
-                  {
-                    items: [message],
-                  },
-                ],
-              };
+                pages: [{
+                  items: [message],
+                }]
+              }
             }
-
+    
             const newData = [...oldData.pages];
-
+    
             newData[0] = {
               ...newData[0],
-              items: [message, ...newData[0].items],
+              items: [
+                message,
+                ...newData[0].items,
+              ]
             };
-
+    
             return {
               ...oldData,
               pages: newData,

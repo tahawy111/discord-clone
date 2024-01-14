@@ -35,7 +35,7 @@ const DeleteMessageModal = () => {
 
       const response = await axios.delete(url);
 
-      const channelKey = `chat:${query?.channelId}:messages`;
+      const channelKey = `chat:${query?.channelId}:messages:update`;
       socket?.emit("sendMessage", { message: response.data, key: channelKey });
 
       onClose();

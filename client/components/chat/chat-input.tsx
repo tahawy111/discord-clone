@@ -11,6 +11,7 @@ import { useSocket } from "../providers/socket-provider";
 import { useModal } from "@/hooks/use-modal-store";
 import EmojiPicker from "../emoji-picker";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface ChatInputProps {
   apiUrl: string;
@@ -37,11 +38,12 @@ export default function ChatInput({
   });
   const { socket } = useSocket();
   const router = useRouter();
-  const isLoading = form.formState.isSubmitting;
   const { onOpen } = useModal();
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (value: z.infer<typeof formSchema>) => {
     try {
+      setIsLoading(true);
       const url = qs.stringifyUrl({
         url: apiUrl,
         query,
@@ -55,6 +57,8 @@ export default function ChatInput({
       router.refresh();
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

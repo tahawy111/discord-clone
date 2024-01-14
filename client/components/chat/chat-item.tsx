@@ -57,6 +57,8 @@ export default function ChatItem({
   timestamp,
   apiUrl,
 }: ChatItemProps) {
+  console.log({ id });
+
   const [isEditing, setIsEditing] = useState(false);
   const { socket } = useSocket();
   const { onOpen } = useModal();
@@ -76,10 +78,11 @@ export default function ChatItem({
     },
   });
 
-  const isLoading = form.formState.isSubmitting;
+  const [isLoading, setIsLoading] = useState(false);
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
+      setIsLoading(true);
       const url = qs.stringifyUrl({
         url: `${apiUrl}/${id}`,
         query: socketQuery,
@@ -97,6 +100,8 @@ export default function ChatItem({
       setIsEditing(false);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(true);
     }
   };
 

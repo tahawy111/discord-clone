@@ -13,11 +13,14 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useModal } from "@/hooks/use-modal-store";
-import { Button } from "../ui/button";
+import { Button } from "@/components/ui/button";
+import { useSocket } from "@/components/providers/socket-provider";
 
 const DeleteMessageModal = () => {
   const { isOpen, onClose, type, data } = useModal();
   const { apiUrl, query } = data;
+  const { socket } = useSocket();
+
 
   const isModalOpen = isOpen && type === "deleteMessage";
 
@@ -31,7 +34,11 @@ const DeleteMessageModal = () => {
         query,
       });
 
-      await axios.delete(url);
+     const response =  await axios.delete(url);
+
+     const channelKey = `chat:${query?.channelId}:messages`;
+     socket?.emit(channelKey, { message: response.data });
+
       onClose();
     } catch (error) {
       console.log(error);

@@ -48,12 +48,9 @@ export default function ChatInput({
       });
 
       const response = await axios.post(url, value);
-
-      socket?.emit("sendMessage", {
-        message: response.data,
-        receiverId: `chat:${query.channelId}:messages`,
-      });
-
+      const channelKey = `chat:${query.channelId}:messages`;
+      socket?.emit(channelKey, { message: response.data });
+      
       form.reset();
       router.refresh();
     } catch (error) {

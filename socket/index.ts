@@ -15,7 +15,7 @@ const io = new Server(httpServer, {
   allowEIO3: true,
 });
 
-type UserType = {
+/* type UserType = {
   userId: string;
   socketId: string;
 };
@@ -80,6 +80,11 @@ io.on("connection", (socket) => {
     removeUser(socket.id);
     io.emit("getUsers", users);
   });
+}); */
+
+io.on("connection", (socket) => {
+  // When connect
+  console.log("a user connected.");
 });
 
 httpServer.listen(process.env.PORT || 8900);

@@ -86,10 +86,10 @@ export default function ChatItem({
       });
 
       const response = await axios.patch(url, values);
+      const updateKey = `chat:${socketQuery.channelId}:messages:update`;
 
-      socket?.emit("sendMessage", {
+      socket?.emit(updateKey, {
         message: response.data,
-        receiverId: `chat:${socketQuery.channelId}:messages`,
       });
 
       form.reset();

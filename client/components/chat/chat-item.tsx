@@ -97,10 +97,10 @@ export default function ChatItem({
       });
 
       form.reset();
-      setIsEditing(false);
     } catch (error) {
       console.log(error);
     } finally {
+      setIsEditing(false);
       setIsLoading(true);
     }
   };

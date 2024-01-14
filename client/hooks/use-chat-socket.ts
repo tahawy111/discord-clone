@@ -45,7 +45,7 @@ export const useChatSocket = ({
             const newData = oldData.pages.map((page: any) => {
               return {
                 ...page,
-                items: page.item.map((item: MessageWithMemberWithUser) => {
+                items: page.items.map((item: MessageWithMemberWithUser) => {
                   if (item.id === message.id) {
                     return message;
                   }

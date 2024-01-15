@@ -54,6 +54,8 @@ export default function ChatInput({
 
       const response = await axios.post(url, value);
       const channelKey = `chat:${query.channelId}:messages`;
+      console.log(channelKey);
+      
       socket?.emit("sendMessage", { message: response.data, key: channelKey });
 
       form.reset();

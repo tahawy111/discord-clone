@@ -23,6 +23,7 @@ export const useChatScroll = ({
       const scrollTop = topDiv?.scrollTop;
 
       if (scrollTop === 0 && shouldLoadMore) {
+        topDiv!.scrollTop = 100;
         loadMore();
       }
     };
@@ -50,13 +51,13 @@ export const useChatScroll = ({
 
       const distanceFromBottom =
         topDiv.scrollHeight - topDiv.scrollTop - topDiv.clientHeight;
-    //   console.log({
-    //     scrollHeight: topDiv.scrollHeight,
-    //     scrollTop: topDiv.scrollTop,
-    //     clientHeight: topDiv.clientHeight,
-    //   });
+      //   console.log({
+      //     scrollHeight: topDiv.scrollHeight,
+      //     scrollTop: topDiv.scrollTop,
+      //     clientHeight: topDiv.clientHeight,
+      //   });
 
-    //   console.log(distanceFromBottom);
+      //   console.log(distanceFromBottom);
 
       return distanceFromBottom <= 100;
     };

@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
   socket.on(
     "sendMessage",
     ({ message, key }: { message: any; key: string }) => {
-      console.log({ message, key });
+      // console.log({ message, key });
 
       io.emit("getMessage", { message, key });
     }

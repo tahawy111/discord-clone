@@ -1,5 +1,6 @@
 import ChatHeader from "@/components/chat/chat-header";
 import ChatInput from "@/components/chat/chat-input";
+import ChatMessages from "@/components/chat/chat-messages";
 import { getAuthSession } from "@/lib/auth";
 import { getOrCreateConversation } from "@/lib/conversation";
 import { db } from "@/lib/db";
@@ -51,9 +52,24 @@ export default async function MemberIdPage({ params }: MemberIdPageProps) {
         type="conversation"
       />
 
-      <div className="flex-1">Future Messages</div>
+      <ChatMessages
+        name={otherMember.user.name}
+        member={currentMember}
+        chatId={conversation.id}
+        apiUrl={"/api/direct-messages"}
+        socketUrl={"/api/socket/direct-messages"}
+        socketQuery={{ conversationId: conversation.id }}
+        paramKey={"conversationId"}
+        paramValue={conversation.id}
+        type={"conversation"}
+      />
 
-      {/* <ChatInput /> */}
+      <ChatInput
+        apiUrl={"/api/direct-messages/sendMessage"}
+        query={{ conversationId: conversation.id }}
+        name={otherMember.user.name}
+        type={"conversation"}
+      />
     </div>
   );
 }

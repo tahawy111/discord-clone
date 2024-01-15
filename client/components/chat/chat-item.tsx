@@ -57,7 +57,6 @@ export default function ChatItem({
   timestamp,
   apiUrl,
 }: ChatItemProps) {
-  console.log({ id });
 
   const [isEditing, setIsEditing] = useState(false);
   const { socket } = useSocket();

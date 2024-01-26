@@ -2,7 +2,6 @@
 import { Suspense, useContext, useEffect, useState } from "react";
 import { User } from "@prisma/client";
 import Image from "next/image";
-import { SocketContext } from "../context/SocketContext";
 
 interface AvatarProps {
   user?: User;
@@ -14,19 +13,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
       <Image fill src={"/images/placeholder-image.jpg"} alt="Avatar" />
     </>
   );
-  const { onlineUsers, socket } = useContext(SocketContext);
-  console.log(onlineUsers);
-  const [isActive, setIsActive] = useState<boolean>(false);
 
-  useEffect(() => {
-    setIsActive(onlineUsers.includes(user?.id!));
-  }, [socket, onlineUsers]);
-
-  // console.log({
-  //   onlineUsers,
-  //   isActive: onlineUsers.includes(session.data?.user.id as string),
-  //   userId: session.data?.user.id,
-  // });
 
   return (
     <div className="relative">
@@ -53,7 +40,7 @@ const Avatar: React.FC<AvatarProps> = ({ user }) => {
           />
         </Suspense>
       </div>
-      {isActive && (
+      {true && (
         <span
           className="
             absolute 

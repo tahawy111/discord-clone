@@ -30,6 +30,7 @@ import { useRouter } from "next/navigation";
 import { useModal } from "@/hooks/use-modal-store";
 
 const formSchema = z.object({
+  name: z.string().optional(),
   image: z.string().min(1, { message: "Attachment is required." }),
 });
 
@@ -44,6 +45,7 @@ const MessageFileModal = () => {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      name:"",
       image: "",
     },
   });

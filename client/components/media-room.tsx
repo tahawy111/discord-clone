@@ -1,9 +1,10 @@
-"use client"
+"use client";
 
 import { Loader2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { LiveKitRoom, VideoConference } from "@livekit/components-react";
+import "@livekit/components-styles";
 
 interface MediaRoomProps {
   chatId: string;
@@ -19,11 +20,17 @@ export default function MediaRoom({ audio, chatId, video }: MediaRoomProps) {
     if (!session?.user.name) return;
 
     (async () => {
-      const res = await fetch(
-        `/api/livekit?room=${chatId}&username=${session.user.name}`
-      );
-      const data = await res.json();
-      setToken(data.token);
+      try {
+        const res = await fetch(
+          `/api/livekit?room=${chatId}&username=${session.user.name}`
+        );
+        const data = await res.json();
+        setToken(data.token);
+        console.log(data.token);
+        
+      } catch (error) {
+        console.log(error);
+      }
     })();
   }, [session?.user, chatId]);
 
@@ -44,7 +51,7 @@ export default function MediaRoom({ audio, chatId, video }: MediaRoomProps) {
       serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
       data-lk-theme="default"
       style={{ height: "100dvh" }}
-      connect
+      connect={true}
     >
       <VideoConference />
     </LiveKitRoom>

@@ -1,7 +1,7 @@
 import ChatHeader from "@/components/chat/chat-header";
 import ChatInput from "@/components/chat/chat-input";
 import ChatMessages from "@/components/chat/chat-messages";
-import { MediaRoom } from "@/components/media-room";
+import MediaRoom from "@/components/media-room";
 import { getAuthSession } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ChannelType } from "@prisma/client";
@@ -69,10 +69,10 @@ export default async function ChannelIdPage({ params }: ChannelIdPageProps) {
       )}
 
       {channel.type === ChannelType.AUDIO && (
-        <MediaRoom chatId={channel.id} audio video={false} />
+        <MediaRoom chatId={channel.id} audio={true} video={false} />
       )}
       {channel.type === ChannelType.VIDEO && (
-        <MediaRoom chatId={channel.id} video audio />
+        <MediaRoom chatId={channel.id} video={true} audio={true} />
       )}
     </div>
   );

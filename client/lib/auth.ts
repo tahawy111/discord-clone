@@ -63,7 +63,7 @@ export const authOptions: AuthOptions = {
     async jwt({ token, user }) {
       const dbUser = await db.user.findFirst({
         where: {
-          email: token.email,
+          email: token.email as string,
         },
       });
 

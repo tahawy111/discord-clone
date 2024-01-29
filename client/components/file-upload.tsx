@@ -11,6 +11,7 @@ interface FileUploadProps {
   file?: File | string;
   setFile: Dispatch<SetStateAction<File | undefined | string>>;
   setValue: UseFormSetValue<{
+    name: string;
     image: string;
   }>;
 }
@@ -78,7 +79,7 @@ const FileUpload = ({ endpoint, file, setFile, setValue }: FileUploadProps) => {
       ) : (
         <div
           className={cn(
-            "relative w-full p-6 rounded-lg mt-5 mx-auto bg-red-500",
+            "relative w-full p-6 rounded-lg mt-5 mx-auto bg-red-500"
           )}
         >
           <p className="text-white">{fileName}</p>

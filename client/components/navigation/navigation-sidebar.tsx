@@ -8,8 +8,7 @@ import { ModeToggle } from "@/components/mode-toggle";
 import NavigationAction from "@/components/navigation/navigation-action";
 import NavigationItem from "@/components/navigation/navigation-item";
 import UserButton from "@/components/user-button";
-
-const NavigationSidebar = async () => {
+export default async function NavigationSidebar() {
   const session = await getAuthSession();
 
   if (!session?.user) return redirect("/login");
@@ -48,6 +47,4 @@ const NavigationSidebar = async () => {
       </div>
     </div>
   );
-};
-
-export default NavigationSidebar;
+}

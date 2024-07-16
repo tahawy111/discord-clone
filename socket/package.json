@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/index.js --omit=dev",
     "dev": "nodemon index.ts",
-    "build": "tsc"
+    "build": "tsc",
+    "netlify_build": "netlify deploy --prod"
   },
   "keywords": [],
   "author": "",

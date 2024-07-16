@@ -6,6 +6,7 @@ const app = express();
 app.use(cors());
 
 app.get("/", (req, res) => res.send("Hello from socket server"));
+app.use("/.netlify/functions/api", app);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {

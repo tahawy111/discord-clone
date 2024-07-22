@@ -6,7 +6,6 @@ const app = express();
 app.use(cors());
 
 app.get("/", (req, res) => res.send("Hello from socket server"));
-app.use("/.netlify/functions/api", app);
 
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
@@ -18,7 +17,7 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
   // When connect
-  console.log("a user connected.");
+  // console.log("a user connected.");
 
   socket.on(
     "sendMessage",
@@ -30,7 +29,7 @@ io.on("connection", (socket) => {
   );
 
   socket.on("disconnect", () => {
-    console.log("a user disconnected.");
+    // console.log("a user disconnected.");
   });
 });
 
